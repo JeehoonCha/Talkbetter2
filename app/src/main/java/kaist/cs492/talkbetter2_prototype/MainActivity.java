@@ -24,6 +24,8 @@ public class MainActivity extends Activity implements TurnDataListener, DisplayI
 	ToggleButton serverButton;
 	EditText ipText;
 	TextView debugText, turnText ,myIP;
+    int prevTurn = -1;
+    int zeroCount = -1;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +50,7 @@ public class MainActivity extends Activity implements TurnDataListener, DisplayI
 
 		connect.setOnClickListener(this);
 		start.setOnClickListener(this);
+
 	}
 
 	@Override
@@ -70,7 +73,9 @@ public class MainActivity extends Activity implements TurnDataListener, DisplayI
 
 	@Override
 	public void onTurnDataReceived(int[] arg0) {
-		if(arg0.length != 0) {
+		final int reminder3_threshold = 3;
+
+        if(arg0.length != 0) {
 			turnText.setText(""+arg0[0]);
 			debugText.setText("I am : "+mSocioPhone.getMyId()+" turn : " + arg0[0]+"\r\n"+debugText.getText().toString());
 
@@ -80,6 +85,32 @@ public class MainActivity extends Activity implements TurnDataListener, DisplayI
 					turnText.invalidate();
 				}
 			});
+
+            // for reminder 3
+            int curTurn = arg0[0];
+
+            if(curTurn == 0){
+                if(prevTurn == curTurn){
+                    zeroCount++;
+                } else {
+                    zeroCount = 0;
+                }
+            }
+            else if(curTurn > 0){
+                if(zeroCount < reminder3_threshold){
+                    // push reminder 3
+                    debugText.setText("Reminder3 : Too Fast Turn Taking - Turn " + curTurn + "\r\n" + debugText.getText().toString());
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            debugText.invalidate();
+                        }
+                    });
+                }
+                zeroCount = 0;
+            }
+
+            prevTurn = curTurn;
 		}
 	}
 

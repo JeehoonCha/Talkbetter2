@@ -60,7 +60,8 @@ public class MainActivity extends Activity implements TurnDataListener, DisplayI
                 String status = String.valueOf(progress);
                 statusVolVarThreshold.setText(status);
 
-                mSocioPhone.setSilenceVolVarThreshold(progress);
+                double varianceThreshold = progress * 50000000 ;
+                mSocioPhone.setSilenceVolVarThreshold(varianceThreshold);
             }
 
             @Override
@@ -81,7 +82,8 @@ public class MainActivity extends Activity implements TurnDataListener, DisplayI
                 String status = String.valueOf(progress);
                 statusVolThreshold.setText(status);
 
-                mSocioPhone.setSilenceVolThreshold(progress);
+                double volumeThreshold = progress * 5000 ;
+                mSocioPhone.setSilenceVolThreshold(volumeThreshold);
             }
 
             @Override

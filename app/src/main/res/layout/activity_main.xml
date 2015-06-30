@@ -6,7 +6,8 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context=".MainActivity" >
+    tools:context=".MainActivity"
+    android:id="@+id/relativeLayout">
 
     <TextView
         android:id="@+id/textView1"
@@ -83,7 +84,8 @@
         android:layout_height="200dp"
         android:layout_below="@+id/toggleButton1"
         android:layout_toLeftOf="@+id/startButton"
-        android:orientation="vertical" >
+        android:orientation="vertical"
+        android:id="@+id/linearLayout">
 
         <ScrollView
             android:id="@+id/scrollView1"
@@ -116,5 +118,71 @@
         android:layout_alignRight="@+id/connectButton"
         android:text="IP:"
         android:textAppearance="?android:attr/textAppearanceMedium" />
+    <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_below="@+id/linearLayout"
+            android:layout_alignParentStart="true"
+            android:layout_above="@+id/startButton"
+            android:gravity="bottom|end">
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="SilenceVolThd"
+                android:id="@+id/silenceVolThdText"/>
+
+            <SeekBar
+                android:layout_width="200dp"
+                android:layout_height="32dp"
+                android:max="100"
+                android:indeterminate="false"
+                android:id="@+id/volThdSeekBar"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="0"
+                android:id="@+id/volThdStatusText"/>
+        </LinearLayout>
+
+        <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceSmall"
+                        android:text="SilenceVolVarThd"
+                        android:id="@+id/silenceVolVarThdText"/>
+
+                    <SeekBar
+                        android:layout_width="200dp"
+                        android:layout_height="32dp"
+                        android:max="100"
+                        android:indeterminate="false"
+                        android:id="@+id/volVarThdSeekBar"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceSmall"
+                        android:text="0"
+                        android:id="@+id/volVarThdStatusText"/>
+        </LinearLayout>
+
+    </LinearLayout>
 
 </RelativeLayout>

@@ -15,6 +15,8 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.SeekBar;
+import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
@@ -24,6 +26,8 @@ public class MainActivity extends Activity implements TurnDataListener, DisplayI
 	ToggleButton serverButton;
 	EditText ipText;
 	TextView debugText, turnText ,myIP;
+    SeekBar seekBarVolThreshold, seekBarVolVarThreshold;
+    TextView statusVolThreshold,  statusVolVarThreshold;
     int prevTurn = -1;
     int zeroCount = -1;
 
@@ -48,9 +52,51 @@ public class MainActivity extends Activity implements TurnDataListener, DisplayI
 		myIP = (TextView) findViewById(R.id.myiptext);
 		myIP.setText(ipAddressStr);
 
+        seekBarVolVarThreshold = (SeekBar) findViewById(R.id.volVarThdSeekBar);
+        statusVolVarThreshold = (TextView) findViewById(R.id.volVarThdStatusText);
+        seekBarVolVarThreshold.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                String status = String.valueOf(progress);
+                statusVolVarThreshold.setText(status);
+
+                mSocioPhone.setSilenceVolVarThreshold(progress);
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
+        seekBarVolThreshold = (SeekBar) findViewById(R.id.volThdSeekBar);
+        statusVolThreshold = (TextView) findViewById(R.id.volThdStatusText);
+        seekBarVolThreshold.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                String status = String.valueOf(progress);
+                statusVolThreshold.setText(status);
+
+                mSocioPhone.setSilenceVolThreshold(progress);
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
+
 		connect.setOnClickListener(this);
 		start.setOnClickListener(this);
-
 	}
 
 	@Override
@@ -73,8 +119,6 @@ public class MainActivity extends Activity implements TurnDataListener, DisplayI
 
 	@Override
 	public void onTurnDataReceived(int[] arg0) {
-		final int reminder3_threshold = 3;
-
         if(arg0.length != 0) {
 			turnText.setText(""+arg0[0]);
 			debugText.setText("I am : "+mSocioPhone.getMyId()+" turn : " + arg0[0]+"\r\n"+debugText.getText().toString());
@@ -87,17 +131,23 @@ public class MainActivity extends Activity implements TurnDataListener, DisplayI
 			});
 
             // for reminder 3
+            final int reminder3_threshold = 3;
+
             int curTurn = arg0[0];
 
             if(curTurn == 0){
-                if(prevTurn == curTurn){
+                if(prevTurn == curTurn) {
                     zeroCount++;
                 } else {
-                    zeroCount = 0;
+                    zeroCount = 1;
                 }
             }
             else if(curTurn > 0){
-                if(zeroCount < reminder3_threshold){
+                if(prevTurn != curTurn){
+                    zeroCount = 0;
+                }
+
+                if(zeroCount < reminder3_threshold && zeroCount >= 0){
                     // push reminder 3
                     debugText.setText("Reminder3 : Too Fast Turn Taking - Turn " + curTurn + "\r\n" + debugText.getText().toString());
                     runOnUiThread(new Runnable() {
@@ -107,7 +157,8 @@ public class MainActivity extends Activity implements TurnDataListener, DisplayI
                         }
                     });
                 }
-                zeroCount = 0;
+
+                zeroCount = -1;
             }
 
             prevTurn = curTurn;
@@ -119,21 +170,21 @@ public class MainActivity extends Activity implements TurnDataListener, DisplayI
 		if(view.getId() == R.id.connectButton) {
 
 			if(serverButton.isChecked()) {
+                seekBarVolVarThreshold.setVisibility(View.VISIBLE);
+                seekBarVolThreshold.setVisibility(View.VISIBLE);
 				mSocioPhone.isServer = true;
 				mSocioPhone.openServer();
 			}
 			else {
+                seekBarVolVarThreshold.setVisibility(View.INVISIBLE);
+                seekBarVolThreshold.setVisibility(View.INVISIBLE);
 				mSocioPhone.connectToServer(ipText.getText().toString());
-
 			}
 
 		}
 		if(view.getId() == R.id.startButton) {
-
 			mSocioPhone.startRecord(0, "temp");
-
 		}
-
 	}
 
 	@Override

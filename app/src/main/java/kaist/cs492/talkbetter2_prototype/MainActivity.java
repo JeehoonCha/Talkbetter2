@@ -36,8 +36,10 @@ public class MainActivity extends Activity implements TurnDataListener, DisplayI
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		mSocioPhone = new SocioPhone(this, this, this, this, false);
+
 		mSocioPhone.setNetworkMode(true);
 		mSocioPhone.setVolumeOrderMode(true);
+        mSocioPhone.setAllowOverlap(true);
 
 		connect = (Button) findViewById(R.id.connectButton);
 		start = (Button) findViewById(R.id.startButton);
@@ -57,6 +59,8 @@ public class MainActivity extends Activity implements TurnDataListener, DisplayI
         seekBarVolVarThreshold.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                if(progress < 10) progress = 10;
+
                 String status = String.valueOf(progress);
                 statusVolVarThreshold.setText(status);
 
@@ -79,6 +83,8 @@ public class MainActivity extends Activity implements TurnDataListener, DisplayI
         seekBarVolThreshold.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                if(progress < 10) progress = 10;
+
                 String status = String.valueOf(progress);
                 statusVolThreshold.setText(status);
 
@@ -169,17 +175,23 @@ public class MainActivity extends Activity implements TurnDataListener, DisplayI
 
 	@Override
 	public void onClick(View view) {
-		if(view.getId() == R.id.connectButton) {
-
-			if(serverButton.isChecked()) {
+        if(view.getId() == R.id.toggleButton1){
+            if(serverButton.isChecked()){
                 seekBarVolVarThreshold.setVisibility(View.VISIBLE);
                 seekBarVolThreshold.setVisibility(View.VISIBLE);
-				mSocioPhone.isServer = true;
-				mSocioPhone.openServer();
-			}
-			else {
+            } else {
                 seekBarVolVarThreshold.setVisibility(View.INVISIBLE);
                 seekBarVolThreshold.setVisibility(View.INVISIBLE);
+            }
+        }
+
+        if(view.getId() == R.id.connectButton) {
+
+            if(serverButton.isChecked()) {
+                mSocioPhone.isServer = true;
+                mSocioPhone.openServer();
+            }
+			else {
 				mSocioPhone.connectToServer(ipText.getText().toString());
 			}
 

@@ -47,6 +47,7 @@ public class MainActivity extends Activity implements TurnDataListener, DisplayI
 		ipText = (EditText) findViewById(R.id.ipText);
 		debugText = (TextView) findViewById(R.id.debugText);
 		turnText = (TextView) findViewById(R.id.turnText);
+		
 		WifiManager wifiManager = (WifiManager) getSystemService(WIFI_SERVICE);
 		WifiInfo wifiInfo = wifiManager.getConnectionInfo();
 		int ipAddress = wifiInfo.getIpAddress();
@@ -129,7 +130,7 @@ public class MainActivity extends Activity implements TurnDataListener, DisplayI
 	public void onTurnDataReceived(int[] arg0) {
         if(arg0.length != 0) {
 			turnText.setText(""+arg0[0]);
-			debugText.setText("I am : "+mSocioPhone.getMyId()+" turn : " + arg0[0]+"\r\n"+debugText.getText().toString());
+			debugText.setText("MYID["+mSocioPhone.getMyId()+"] TURN[" + arg0[0]+"]\r\n"+debugText.getText().toString());
 
 			runOnUiThread(new Runnable() {
 				public void run() {
